@@ -1,26 +1,311 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ZSB | Connexion</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>body{background:#0f172a;color:#e2e8f0;margin:0;display:flex;align-items:center;justify-content:center;height:100vh;font-family:Arial}
-.c{max-width:380px;width:100%;background:#1e293b;padding:40px;border-radius:16px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.7)}
-h1{color:#10b981;margin-bottom:30px;font-size:28px}input,button{width:100%;padding:16px;margin:12px 0;border-radius:12px;border:none;font-size:17px}
-input{background:#334155;color:white}button{background:#10b981;color:white;font-weight:bold;cursor:pointer}
-button:hover{background:#059669}small{color:#94a3b8;font-size:13px}</style>
-</head><body><div class="c">
-<h1>Draexlmaier ZSB</h1>
-<input type="email" id="email" placeholder="Email" required>
-<input type="password" id="pass" placeholder="Mot de passe" required>
-<button id="loginBtn">Connexion</button>
-<small>Admin: admin@draexlmaier.ma | drax123</small>
-</div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Draexlmaier ZSB</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="assets/favicon.ico">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-left">
+            <!-- Logo et Information -->
+            <div class="auth-brand">
+                <div class="brand-logo">
+                    <i class="fas fa-industry"></i>
+                </div>
+                <h1>Draexlmaier</h1>
+                <p class="brand-subtitle">ZSB Management System</p>
+            </div>
+            
+            <!-- Information Panneau -->
+            <div class="auth-info">
+                <div class="info-card">
+                    <h3><i class="fas fa-shield-alt"></i> Sécurité Renforcée</h3>
+                    <p>Authentification à deux facteurs et chiffrement des données</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-sync-alt"></i> Synchronisation Temps Réel</h3>
+                    <p>Données mises à jour en temps réel sur tous les appareils</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-mobile-alt"></i> Multi-Plateforme</h3>
+                    <p>Accessible sur ordinateur, tablette et smartphone</p>
+                </div>
+            </div>
+            
+            <!-- Statuts Système -->
+            <div class="system-status">
+                <h4><i class="fas fa-server"></i> Statut du système</h4>
+                <div class="status-list">
+                    <div class="status-item online">
+                        <span class="status-dot"></span>
+                        <span>Serveur principal</span>
+                        <span class="status-time">En ligne</span>
+                    </div>
+                    <div class="status-item online">
+                        <span class="status-dot"></span>
+                        <span>Base de données</span>
+                        <span class="status-time">En ligne</span>
+                    </div>
+                    <div class="status-item online">
+                        <span class="status-dot"></span>
+                        <span>Synchronisation</span>
+                        <span class="status-time">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="auth-right">
+            <!-- Formulaire Connexion -->
+            <div class="login-form-container">
+                <div class="form-header">
+                    <h2><i class="fas fa-sign-in-alt"></i> Connexion au système</h2>
+                    <p>Entrez vos identifiants pour accéder à votre espace</p>
+                </div>
+                
+                <form id="loginForm" class="login-form">
+                    <!-- Champ Email -->
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i> Email professionnel
+                        </label>
+                        <div class="input-with-icon">
+                            <input type="email" id="email" name="email" 
+                                   placeholder="prenom.nom@draexlmaier.ma" 
+                                   required autocomplete="username">
+                            <div class="input-hint">
+                                <i class="fas fa-info-circle"></i>
+                                Utilisez votre email d'entreprise
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Champ Mot de passe -->
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i> Mot de passe
+                        </label>
+                        <div class="password-container">
+                            <input type="password" id="password" name="password" 
+                                   placeholder="••••••••" 
+                                   required autocomplete="current-password">
+                            <button type="button" class="toggle-password" 
+                                    onclick="togglePasswordVisibility()">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Options -->
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="remember" name="remember">
+                            <span class="checkmark"></span>
+                            <span class="checkbox-label">Se souvenir de moi</span>
+                        </label>
+                        <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+                    </div>
+                    
+                    <!-- Bouton Connexion -->
+                    <button type="submit" class="btn-primary btn-full btn-lg" id="loginBtn">
+                        <span class="btn-text">
+                            <i class="fas fa-sign-in-alt"></i> Se connecter
+                        </span>
+                        <span class="btn-loader" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i> Connexion...
+                        </span>
+                    </button>
+                    
+                    <!-- Démos Rapides -->
+                    <div class="demo-section">
+                        <h4><i class="fas fa-bolt"></i> Accès rapide (Démonstration)</h4>
+                        <div class="demo-buttons">
+                            <button type="button" class="demo-btn agent" 
+                                    onclick="fillDemoCredentials('agent@draexlmaier.ma', 'drax123')">
+                                <i class="fas fa-user"></i> Agent
+                            </button>
+                            <button type="button" class="demo-btn chef" 
+                                    onclick="fillDemoCredentials('chef@draexlmaier.ma', 'drax123')">
+                                <i class="fas fa-user-tie"></i> Chef d'équipe
+                            </button>
+                            <button type="button" class="demo-btn supervisor" 
+                                    onclick="fillDemoCredentials('superviseur@draexlmaier.ma', 'drax123')">
+                                <i class="fas fa-user-shield"></i> Superviseur
+                            </button>
+                            <button type="button" class="demo-btn sousdir" 
+                                    onclick="fillDemoCredentials('sousdir@draexlmaier.ma', 'drax123')">
+                                <i class="fas fa-user-cog"></i> Sous-directeur
+                            </button>
+                            <button type="button" class="demo-btn directeur" 
+                                    onclick="fillDemoCredentials('directeur@draexlmaier.ma', 'drax123')">
+                                <i class="fas fa-crown"></i> Directeur
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- Messages d'erreur/succès -->
+                <div id="messageContainer">
+                    <div id="errorMessage" class="message error" style="display: none;"></div>
+                    <div id="successMessage" class="message success" style="display: none;"></div>
+                </div>
+                
+                <!-- Information supplémentaire -->
+                <div class="additional-info">
+                    <div class="info-tip">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Pour toute assistance, contactez le support IT: 
+                           <a href="mailto:support.it@draexlmaier.ma">support.it@draexlmaier.ma</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pied de page -->
+            <footer class="auth-footer">
+                <p>&copy; 2024 Draexlmaier Maroc - Système ZSB v2.0</p>
+                <div class="footer-links">
+                    <a href="#"><i class="fas fa-shield-alt"></i> Sécurité</a>
+                    <a href="#"><i class="fas fa-question-circle"></i> Aide</a>
+                    <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+                </div>
+            </footer>
+        </div>
+    </div>
 
-<script>
-const supabase = window.supabase.createClient("https://arqzqflgzszfzwpvtkip.supabase.co","sb_publishable_HEmQwOrXpJm38Y2d9_rD1Q_scpmFg0o");
-document.getElementById("loginBtn").onclick = async () => {
-  const { data, error } = await supabase.auth.signInWithPassword({email:email.value.trim(),password:pass.value});
-  if (error) return alert(error.message);
-  const { data: p } = await supabase.from('profiles').select('role').eq('id',data.user.id).single();
-  if (!p?.role) return location.href='setup.html';
-  const map = {"Agent":"agent.html","Chef d'équipe":"chef.html","Superviseur":"superviseur.html","Sous-directeur":"sousdir.html","Directeur":"directeur.html"};
-  location.href = map[p.role] || "agent.html";
-};
-</script></body></html>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // التحقق من الجلسة النشطة
+        async function checkActiveSession() {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            if (session) {
+                const userRole = localStorage.getItem('user_role');
+                redirectToDashboard(userRole);
+            }
+        }
+        
+        // تعبئة بيانات الديمو
+        function fillDemoCredentials(email, password) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = password;
+            showMessage('Compte de démonstration chargé', 'success');
+        }
+        
+        // تبديل عرض كلمة المرور
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.className = 'fas fa-eye';
+            }
+        }
+        
+        // عرض الرسائل
+        function showMessage(text, type = 'error') {
+            const messageElement = type === 'error' ? 
+                document.getElementById('errorMessage') : 
+                document.getElementById('successMessage');
+            
+            const otherElement = type === 'error' ? 
+                document.getElementById('successMessage') : 
+                document.getElementById('errorMessage');
+            
+            // إخفاء الرسالة الأخرى
+            otherElement.style.display = 'none';
+            
+            // عرض الرسالة الحالية
+            messageElement.textContent = text;
+            messageElement.style.display = 'block';
+            
+            // إخفاء الرسالة بعد 5 ثوان
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 5000);
+        }
+        
+        // توجيه للداشبورد المناسب
+        function redirectToDashboard(role) {
+            const dashboards = {
+                'Agent': 'agent.html',
+                'Chef d\'équipe': 'chef.html',
+                'Superviseur': 'superviseur.html',
+                'Sous-directeur': 'sousdir.html',
+                'Directeur': 'directeur.html'
+            };
+            
+            if (dashboards[role]) {
+                window.location.href = dashboards[role];
+            } else {
+                showMessage('Rôle non reconnu. Contactez le support.', 'error');
+            }
+        }
+        
+        // معالجة تسجيل الدخول
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const btnText = document.querySelector('.btn-text');
+            const btnLoader = document.querySelector('.btn-loader');
+            
+            // التحقق من المدخلات
+            if (!email || !password) {
+                showMessage('Veuillez remplir tous les champs', 'error');
+                return;
+            }
+            
+            // عرض حالة التحميل
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'inline-block';
+            loginBtn.disabled = true;
+            
+            try {
+                // استخدام AuthManager من auth.js
+                const result = await window.authManager.login(email, password);
+                
+                if (result.success) {
+                    showMessage('Connexion réussie ! Redirection...', 'success');
+                    
+                    // تأخير للسماح بقراءة الرسالة
+                    setTimeout(() => {
+                        redirectToDashboard(result.user.role);
+                    }, 1500);
+                }
+            } catch (error) {
+                showMessage(error.message, 'error');
+            } finally {
+                // إعادة عرض زر التحميل
+                btnText.style.display = 'inline-block';
+                btnLoader.style.display = 'none';
+                loginBtn.disabled = false;
+            }
+        });
+        
+        // تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            checkActiveSession();
+            
+            // تعبئة تلقائية للبيئة المحلية
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                document.getElementById('email').value = 'agent@draexlmaier.ma';
+                document.getElementById('password').value = 'drax123';
+            }
+        });
+    </script>
+</body>
+</html>
