@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draexlmaier ZSB - Système de Gestion</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="assets/favicon.ico">
+</head>
+<body class="landing-page">
+    <div class="landing-container">
+        <!-- Navigation -->
+        <nav class="landing-nav">
+            <div class="nav-logo">
+                <i class="fas fa-industry"></i>
+                <span>Draexlmaier ZSB</span>
+            </div>
+            <a href="login.html" class="btn-login">
+                <i class="fas fa-sign-in-alt"></i> Connexion
+            </a>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge">Système de Gestion</span>
+                    <span class="badge outline">Version 2.0</span>
+                </div>
+                
+                <h1 class="hero-title">
+                    <span class="highlight">ZSB</span> Management System
+                </h1>
+                
+                <p class="hero-subtitle">
+                    Plateforme intégrée pour la gestion des opérations logistiques 
+                    et de production de la division ZSB Draexlmaier
+                </p>
+                
+                <div class="hero-stats">
+                    <div class="stat">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <strong id="totalUsers">500+</strong>
+                            <small>Utilisateurs</small>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-conveyor-belt"></i>
+                        <div>
+                            <strong id="productionLines">16</strong>
+                            <small>Lignes de production</small>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-chart-line"></i>
+                        <div>
+                            <strong id="dailyOutput">25K</strong>
+                            <small>Unités/jour</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-actions">
+                    <a href="login.html" class="btn-primary btn-large">
+                        <i class="fas fa-rocket"></i> Accéder au système
+                    </a>
+                    <a href="#features" class="btn-secondary btn-large">
+                        <i class="fas fa-info-circle"></i> En savoir plus
+                    </a>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <div class="dashboard-preview">
+                    <div class="preview-header">
+                        <div class="preview-tabs">
+                            <span class="tab active">Production</span>
+                            <span class="tab">Qualité</span>
+                            <span class="tab">Rapports</span>
+                        </div>
+                    </div>
+                    <div class="preview-content">
+                        <div class="chart-preview"></div>
+                        <div class="stats-preview">
+                            <div class="stat-mini success">
+                                <span>98.5%</span>
+                                <small>Qualité</small>
+                            </div>
+                            <div class="stat-mini warning">
+                                <span>2500</span>
+                                <small>Production</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section id="features" class="features-section">
+            <h2 class="section-title">Fonctionnalités du système</h2>
+            <p class="section-subtitle">Une plateforme complète pour tous les niveaux hiérarchiques</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon agent">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>Agents Production</h3>
+                    <ul>
+                        <li>Suivi de production en temps réel</li>
+                        <li>Pointage électronique</li>
+                        <li>Rapports qualité</li>
+                        <li>Communication d'équipe</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon chef">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Chefs d'Équipe</h3>
+                    <ul>
+                        <li>Gestion des agents</li>
+                        <li>Planification des shifts</li>
+                        <li>Suivi performance équipe</li>
+                        <li>Rapports détaillés</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon supervisor">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3>Superviseurs</h3>
+                    <ul>
+                        <li>Supervision multi-lignes</li>
+                        <li>Analyse performance</li>
+                        <li>Gestion des problèmes</li>
+                        <li>Reporting hiérarchique</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon director">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <h3>Direction</h3>
+                    <ul>
+                        <li>Tableau de bord exécutif</li>
+                        <li>Analytics avancés</li>
+                        <li>Gestion stratégique</li>
+                        <li>Reporting global</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Departments -->
+        <section class="departments-section">
+            <h2 class="section-title">Départements ZSB</h2>
+            <p class="section-subtitle">Cinq départements spécialisés sous un système unifié</p>
+            
+            <div class="departments-grid">
+                <div class="dept-card">
+                    <h3><i class="fas fa-microchip"></i> INR</h3>
+                    <p>Intérieur et habillage</p>
+                    <div class="dept-stats">
+                        <span>8 lignes</span>
+                        <span>120 agents</span>
+                    </div>
+                </div>
+                
+                <div class="dept-card">
+                    <h3><i class="fas fa-cogs"></i> THS</h3>
+                    <p>Tableaux et habillages sièges</p>
+                    <div class="dept-stats">
+                        <span>6 lignes</span>
+                        <span>90 agents</span>
+                    </div>
+                </div>
+                
+                <div class="dept-card">
+                    <h3><i class="fas fa-tachometer-alt"></i> COCPIT</h3>
+                    <p>Poste de conduite</p>
+                    <div class="dept-stats">
+                        <span>4 lignes</span>
+                        <span>60 agents</span>
+                    </div>
+                </div>
+                
+                <div class="dept-card">
+                    <h3><i class="fas fa-car"></i> BASIS</h3>
+                    <p>Plancher et structure</p>
+                    <div class="dept-stats">
+                        <span>3 lignes</span>
+                        <span>45 agents</span>
+                    </div>
+                </div>
+                
+                <div class="dept-card">
+                    <h3><i class="fas fa-puzzle-piece"></i> MM</h3>
+                    <p>Modules et sous-ensembles</p>
+                    <div class="dept-stats">
+                        <span>5 lignes</span>
+                        <span>75 agents</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="landing-footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo-large">
+                        <i class="fas fa-industry"></i>
+                        <div>
+                            <h3>Draexlmaier</h3>
+                            <span>Division ZSB - Maroc</span>
+                        </div>
+                    </div>
+                    <p class="footer-description">
+                        Système de gestion intégré pour l'optimisation 
+                        des opérations de production logistique
+                    </p>
+                </div>
+                
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Système</h4>
+                        <a href="login.html">Connexion</a>
+                        <a href="#features">Fonctionnalités</a>
+                        <a href="#">Documentation</a>
+                        <a href="#">Support</a>
+                    </div>
+                    
+                    <div class="link-group">
+                        <h4>Contact</h4>
+                        <a href="mailto:support.it@draexlmaier.ma">
+                            <i class="fas fa-envelope"></i> support.it@draexlmaier.ma
+                        </a>
+                        <a href="tel:+212522123456">
+                            <i class="fas fa-phone"></i> 0522 12 34 56
+                        </a>
+                        <a href="#">
+                            <i class="fas fa-map-marker-alt"></i> Zone Industrielle, Tanger
+                        </a>
+                    </div>
+                    
+                    <div class="link-group">
+                        <h4>Sécurité</h4>
+                        <a href="#"><i class="fas fa-shield-alt"></i> Politique de sécurité</a>
+                        <a href="#"><i class="fas fa-user-lock"></i> Confidentialité</a>
+                        <a href="#"><i class="fas fa-file-contract"></i> Conditions d'utilisation</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Draexlmaier Maroc. Tous droits réservés.</p>
+                <div class="footer-version">
+                    <span class="version-badge">v2.0.1</span>
+                    <span class="build-info">Build: 2024.01.15</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/supabase.js"></script>
+    <script>
+        // التحقق من الجلسة النشطة
+        async function checkSession() {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            if (session) {
+                // توجيه المستخدم حسب دوره
+                const userRole = localStorage.getItem('user_role');
+                const dashboards = {
+                    'Agent': 'agent.html',
+                    'Chef d\'équipe': 'chef.html',
+                    'Superviseur': 'superviseur.html',
+                    'Sous-directeur': 'sousdir.html',
+                    'Directeur': 'directeur.html'
+                };
+                
+                if (dashboards[userRole]) {
+                    window.location.href = dashboards[userRole];
+                }
+            }
+        }
+        
+        // تحميل إحصائيات النظام
+        async function loadSystemStats() {
+            try {
+                // يمكنك استبدال هذا ببيانات حقيقية من API
+                const stats = {
+                    totalUsers: 527,
+                    productionLines: 16,
+                    dailyOutput: '25,430'
+                };
+                
+                document.getElementById('totalUsers').textContent = stats.totalUsers;
+                document.getElementById('productionLines').textContent = stats.productionLines;
+                document.getElementById('dailyOutput').textContent = stats.dailyOutput;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            checkSession();
+            loadSystemStats();
+        });
+    </script>
+</body>
+</html>
