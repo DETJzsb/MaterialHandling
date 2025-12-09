@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Agent - Draexlmaier ZSB</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js">
+    <link rel="icon" type="image/png" href="assets/favicon.ico">
+</head>
+<body class="dashboard agent-dashboard">
+    <!-- Navigation -->
+    <nav class="dashboard-nav">
+        <div class="nav-left">
+            <div class="nav-logo">
+                <div class="logo-circle agent">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="logo-text">
+                    <h2>Draexlmaier ZSB</h2>
+                    <span class="subtitle">Agent Dashboard</span>
+                </div>
+            </div>
+            
+            <div class="nav-shift-info">
+                <div class="shift-badge" id="currentShiftBadge">
+                    <i class="fas fa-clock"></i>
+                    <span>Shift A</span>
+                </div>
+                <div class="shift-timer" id="shiftTimer">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span>04:32:15</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav-center">
+            <div class="production-status">
+                <div class="status-indicator active" id="productionStatus">
+                    <span class="status-dot"></span>
+                    <span>En production</span>
+                </div>
+                <div class="production-counter">
+                    <i class="fas fa-box"></i>
+                    <span id="currentProduction">0</span>
+                    <small>/jour</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <div class="notifications">
+                <button class="notification-btn" onclick="toggleNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count" id="notificationCount">3</span>
+                </button>
+                <div class="notifications-dropdown" id="notificationsDropdown">
+                    <div class="dropdown-header">
+                        <h4>Notifications</h4>
+                        <button class="mark-all-read" onclick="markAllAsRead()">Tout marquer comme lu</button>
+                    </div>
+                    <div class="notifications-list" id="notificationsList">
+                        <!-- Notifications dynamiques -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="user-menu">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-info">
+                    <strong id="agentName"></strong>
+                    <small id="agentPosition"></small>
+                </div>
+                <button class="menu-toggle" onclick="toggleUserMenu()">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="user-dropdown" id="userDropdown">
+                    <a href="#profile" onclick="switchTab('profile')">
+                        <i class="fas fa-user-cog"></i> Mon profil
+                    </a>
+                    <a href="#settings" onclick="switchTab('settings')">
+                        <i class="fas fa-cog"></i> Paramètres
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-bars"></i> Menu</h3>
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="#overview" onclick="switchTab('overview')">
+                        <i class="fas fa-home"></i> Vue d'ensemble
+                    </a>
+                </li>
+                <li>
+                    <a href="#production" onclick="switchTab('production')">
+                        <i class="fas fa-chart-line"></i> Production
+                        <span class="menu-badge" id="productionBadge">0</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#quality" onclick="switchTab('quality')">
+                        <i class="fas fa-clipboard-check"></i> Qualité
+                        <span class="menu-badge success" id="qualityBadge">100%</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#tasks" onclick="switchTab('tasks')">
+                        <i class="fas fa-tasks"></i> Tâches
+                        <span class="menu-badge warning" id="tasksBadge">2</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#messages" onclick="switchTab('messages')">
+                        <i class="fas fa-comments"></i> Messages
+                        <span class="menu-badge info" id="messagesBadge">1</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#reports" onclick="switchTab('reports')">
+                        <i class="fas fa-file-alt"></i> Rapports
+                    </a>
+                </li>
+                <li>
+                    <a href="#help" onclick="switchTab('help')">
+                        <i class="fas fa-question-circle"></i> Aide
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="quick-actions">
+                    <h4>Actions rapides</h4>
+                    <button class="quick-action-btn" onclick="clockInOut()">
+                        <i class="fas fa-fingerprint"></i> Pointer
+                    </button>
+                    <button class="quick-action-btn" onclick="reportIssue()">
+                        <i class="fas fa-exclamation-triangle"></i> Signaler
+                    </button>
+                    <button class="quick-action-btn" onclick="requestBreak()">
+                        <i class="fas fa-coffee"></i> Pause
+                    </button>
+                </div>
+                
+                <div class="current-line">
+                    <h4>Ligne actuelle</h4>
+                    <div class="line-info">
+                        <i class="fas fa-conveyor-belt"></i>
+                        <div>
+                            <strong id="currentLineName">Line 1</strong>
+                            <small id="lineStatus">● En fonctionnement</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <!-- Vue d'ensemble -->
+            <div id="overview" class="content-tab active">
+                <div class="tab-header">
+                    <h2><i class="fas fa-home"></i> Vue d'ensemble</h2>
+                    <div class="tab-actions">
+                        <div class="current-time" id="currentTime">--:--:--</div>
+                        <button class="btn-primary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt"></i> Actualiser
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Statistiques principales -->
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Production aujourd'hui</h3>
+                            <div class="stat-value" id="todayProduction">0</div>
+                            <div class="stat-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="productionProgress" style="width: 0%"></div>
+                                </div>
+                                <small id="productionTarget">Objectif: 0</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Taux de qualité</h3>
+                            <div class="stat-value" id="qualityRate">0%</div>
+                            <div class="stat-trend">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="qualityTrend">+0.0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Temps productif</h3>
+                            <div class="stat-value" id="productiveTime">0h 00m</div>
+                            <div class="stat-detail">
+                                <span id="efficiencyRate">0%</span> efficacité
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card info">
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>Classement</h3>
+                            <div class="stat-value" id="ranking">#0</div>
+                            <div class="stat-detail">
+                                Sur <span id="totalAgents">0</span> agents
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Graphique de production -->
+                <div class="chart-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-chart-bar"></i> Production par heure</h3>
+                        <div class="chart-controls">
+                            <select id="chartPeriod" onchange="updateProductionChart()">
+                                <option value="today">Aujourd'hui</option>
+                                <option value="week">Cette semaine</option>
+                                <option value="month">Ce mois</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="productionChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Tâches en cours -->
+                <div class="tasks-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-tasks"></i> Tâches en cours</h3>
+                        <button class="btn-secondary" onclick="addTask()">
+                            <i class="fas fa-plus"></i> Nouvelle tâche
+                        </button>
+                    </div>
+                    <div class="tasks-list" id="tasksList">
+                        <!-- Tâches dynamiques -->
+                    </div>
+                </div>
+                
+                <!-- Messages récents -->
+                <div class="messages-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-comments"></i> Messages récents</h3>
+                        <button class="btn-secondary" onclick="showAllMessages()">
+                            <i class="fas fa-envelope"></i> Voir tout
+                        </button>
+                    </div>
+                    <div class="messages-list" id="messagesList">
+                        <!-- Messages dynamiques -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglet Production -->
+            <div id="production" class="content-tab">
+                <div class="tab-header">
+                    <h2><i class="fas fa-chart-line"></i> Suivi de production</h2>
+                    <div class="tab-actions">
+                        <button class="btn-primary" onclick="startProduction()">
+                            <i class="fas fa-play"></i> Démarrer production
+                        </button>
+                        <button class="btn-secondary" onclick="pauseProduction()">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Contrôle de production -->
+                <div class="production-control">
+                    <div class="control-panel">
+                        <div class="control-item">
+                            <h4>Référence en cours</h4>
+                            <div class="reference-info">
+                                <div class="reference-code" id="currentReference">REF-001</div>
+                                <div class="reference-desc" id="referenceDescription">Pièce principale</div>
+                            </div>
+                        </div>
+                        
+                        <div class="control-item">
+                            <h4>Temps cycle</h4>
+                            <div class="cycle-info">
+                                <div class="cycle-time" id="cycleTime">00:45</div>
+                                <div class="cycle-target">Objectif: <span id="targetCycle">00:40</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="control-item">
+                            <h4>Quantité</h4>
+                            <div class="quantity-control">
+                                <button class="quantity-btn" onclick="decreaseQuantity()">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <div class="quantity-value" id="currentQuantity">1</div>
+                                <button class="quantity-btn" onclick="increaseQuantity()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Boutons d'action -->
+                    <div class="action-buttons">
+                        <button class="action-btn success" onclick="markAsCompleted()">
+                            <i class="fas fa-check"></i> Marquer comme terminé
+                        </button>
+                        <button class="action-btn warning" onclick="reportDefect()">
+                            <i class="fas fa-times"></i> Signaler défaut
+                        </button>
+                        <button class="action-btn info" onclick="requestMaterial()">
+                            <i class="fas fa-box-open"></i> Demander matériel
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Historique de production -->
+                <div class="production-history">
+                    <h3><i class="fas fa-history"></i> Historique récent</h3>
+                    <table class="production-table">
+                        <thead>
+                            <tr>
+                                <th>Heure</th>
+                                <th>Référence</th>
+                                <th>Quantité</th>
+                                <th>Temps</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productionHistory">
+                            <!-- Données dynamiques -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Onglet Profil -->
+            <div id="profile" class="content-tab">
+                <div class="tab-header">
+                    <h2><i class="fas fa-user-cog"></i> Mon profil</h2>
+                    <button class="btn-primary" onclick="editProfile()">
+                        <i class="fas fa-edit"></i> Modifier
+                    </button>
+                </div>
+                
+                <div class="profile-container">
+                    <!-- Informations personnelles -->
+                    <div class="profile-section">
+                        <h3><i class="fas fa-id-card"></i> Informations personnelles</h3>
+                        <div class="profile-info-grid">
+                            <div class="info-item">
+                                <strong>Nom complet:</strong>
+                                <span id="profileFullName">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Matricule:</strong>
+                                <span id="profileMatricule">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Téléphone:</strong>
+                                <span id="profilePhone">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Email:</strong>
+                                <span id="profileEmail">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Date d'entrée:</strong>
+                                <span id="profileHireDate">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Informations professionnelles -->
+                    <div class="profile-section">
+                        <h3><i class="fas fa-briefcase"></i> Informations professionnelles</h3>
+                        <div class="profile-info-grid">
+                            <div class="info-item">
+                                <strong>Département:</strong>
+                                <span class="dept-badge" id="profileDepartment">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Ligne:</strong>
+                                <span id="profileLine">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Côté ligne:</strong>
+                                <span id="profileLineSide">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Shift:</strong>
+                                <span id="profileShift">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Superviseur:</strong>
+                                <span id="profileSupervisor">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Chef d'équipe:</strong>
+                                <span id="profileChef">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistiques personnelles -->
+                    <div class="profile-section">
+                        <h3><i class="fas fa-chart-bar"></i> Mes statistiques</h3>
+                        <div class="stats-mini-grid">
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" id="totalProduction">0</div>
+                                <div class="mini-stat-label">Production totale</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" id="avgQuality">0%</div>
+                                <div class="mini-stat-label">Qualité moyenne</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" id="avgEfficiency">0%</div>
+                                <div class="mini-stat-label">Efficacité moyenne</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-value" id="attendanceRate">0%</div>
+                                <div class="mini-stat-label">Taux de présence</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Formations -->
+                    <div class="profile-section">
+                        <h3><i class="fas fa-graduation-cap"></i> Formations</h3>
+                        <div class="trainings-list" id="trainingsList">
+                            <!-- Formations dynamiques -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modales -->
+    <div id="clockModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-fingerprint"></i> Pointage</h3>
+                <button class="close-modal" onclick="closeModal('clockModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="clockin-container">
+                    <div class="clock-time">
+                        <i class="fas fa-clock"></i>
+                        <div id="modalTime">--:--:--</div>
+                    </div>
+                    <div class="clock-status">
+                        <div class="status-indicator">
+                            <span class="status-dot"></span>
+                            <span id="clockStatus">Prêt à pointer</span>
+                        </div>
+                    </div>
+                    <div class="clock-actions">
+                        <button class="btn-primary btn-large" onclick="confirmClockIn()">
+                            <i class="fas fa-check"></i> Confirmer le pointage
+                        </button>
+                        <button class="btn-secondary" onclick="closeModal('clockModal')">
+                            <i class="fas fa-times"></i> Annuler
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // Variables globales
+        let agentProfile = null;
+        let productionChart = null;
+        let clockInterval = null;
+        let shiftInterval = null;
+
+        // تهيئة الصفحة
+        async function initDashboard() {
+            try {
+                // التحقق من المصادقة
+                if (!window.authManager || !window.authManager.currentProfile) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                agentProfile = window.authManager.currentProfile;
+                
+                // التحقق من الدور
+                if (agentProfile.role !== 'Agent') {
+                    alert('Accès non autorisé. Redirection...');
+                    window.authManager.logout();
+                    return;
+                }
+
+                // تحديث واجهة المستخدم
+                updateUI();
+                
+                // تحميل البيانات
+                await loadDashboardData();
+                
+                // بدء المؤقتات
+                startClock();
+                startShiftTimer();
+                
+                // تحديث البيانات بانتظام
+                setInterval(() => {
+                    updateLiveData();
+                }, 30000); // كل 30 ثانية
+                
+            } catch (error) {
+                console.error('Dashboard init error:', error);
+                window.location.href = 'login.html';
+            }
+        }
+
+        // تحديث واجهة المستخدم
+        function updateUI() {
+            // معلومات المستخدم
+            document.getElementById('agentName').textContent = agentProfile.full_name || 'Agent';
+            document.getElementById('profileFullName').textContent = agentProfile.full_name || '-';
+            document.getElementById('profileEmail').textContent = agentProfile.email || '-';
+            
+            // معلومات العمل
+            if (agentProfile.shift) {
+                document.getElementById('currentShiftBadge').querySelector('span').textContent = agentProfile.shift;
+                document.getElementById('profileShift').textContent = agentProfile.shift;
+            }
+            
+            if (agentProfile.department) {
+                document.getElementById('profileDepartment').textContent = agentProfile.department;
+            }
+            
+            if (agentProfile.production_line) {
+                document.getElementById('currentLineName').textContent = agentProfile.production_line;
+                document.getElementById('profileLine').textContent = agentProfile.production_line;
+            }
+            
+            if (agentProfile.line_side) {
+                document.getElementById('profileLineSide').textContent = agentProfile.line_side;
+            }
+            
+            // تحديث الـ Position
+            const position = `Agent ${agentProfile.department || ''} ${agentProfile.shift || ''}`;
+            document.getElementById('agentPosition').textContent = position.trim();
+        }
+
+        // تحميل بيانات الداشبورد
+        async function loadDashboardData() {
+            try {
+                // استدعاء Edge Function للحصول على بيانات الـ Agent
+                const response = await window.callEdgeFunction('get-agent-dashboard', {
+                    agent_id: agentProfile.id,
+                    date: new Date().toISOString().split('T')[0]
+                }, localStorage.getItem('auth_token'));
+                
+                if (response.success) {
+                    updateDashboardData(response.data);
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showNotification('Erreur de chargement des données', 'error');
+            }
+        }
+
+        // تحديث بيانات الداشبورد
+        function updateDashboardData(data) {
+            // الإحصائيات
+            if (data.stats) {
+                const stats = data.stats;
+                
+                document.getElementById('todayProduction').textContent = stats.today_production || 0;
+                document.getElementById('currentProduction').textContent = stats.today_production || 0;
+                document.getElementById('qualityRate').textContent = stats.quality_rate || '0%';
+                document.getElementById('productiveTime').textContent = stats.productive_time || '0h 00m';
+                document.getElementById('efficiencyRate').textContent = stats.efficiency_rate || '0%';
+                document.getElementById('ranking').textContent = stats.ranking ? `#${stats.ranking}` : '#0';
+                document.getElementById('totalAgents').textContent = stats.total_agents || 0;
+                
+                // تحديث شريط التقدم
+                if (stats.production_target && stats.today_production) {
+                    const percentage = (stats.today_production / stats.production_target) * 100;
+                    document.getElementById('productionProgress').style.width = `${Math.min(percentage, 100)}%`;
+                    document.getElementById('productionTarget').textContent = `Objectif: ${stats.production_target}`;
+                }
+                
+                // تحديث البادجات
+                document.getElementById('productionBadge').textContent = stats.today_production || 0;
+                document.getElementById('qualityBadge').textContent = stats.quality_rate || '0%';
+            }
+            
+            // المهام
+            if (data.tasks) {
+                updateTasksList(data.tasks);
+            }
+            
+            // الرسائل
+            if (data.messages) {
+                updateMessagesList(data.messages);
+            }
+            
+            // الإخطارات
+            if (data.notifications) {
+                updateNotifications(data.notifications);
+            }
+            
+            // تحديث المخطط
+            if (data.production_chart && document.getElementById('overview').classList.contains('active')) {
+                updateProductionChart(data.production_chart);
+            }
+        }
+
+        // تحديث قائمة المهام
+        function updateTasksList(tasks) {
+            const container = document.getElementById('tasksList');
+            container.innerHTML = '';
+            
+            tasks.slice(0, 5).forEach(task => {
+                const taskElement = document.createElement('div');
+                taskElement.className = `task-item ${task.priority}`;
+                taskElement.innerHTML = `
+                    <div class="task-checkbox">
+                        <input type="checkbox" ${task.completed ? 'checked' : ''} 
+                               onchange="toggleTask('${task.id}', this.checked)">
+                    </div>
+                    <div class="task-content">
+                        <div class="task-title">${task.title}</div>
+                        <div class="task-meta">
+                            <span class="task-time"><i class="fas fa-clock"></i> ${task.time}</span>
+                            <span class="task-priority ${task.priority}">${task.priority}</span>
+                        </div>
+                    </div>
+                    <button class="task-action" onclick="viewTask('${task.id}')">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                `;
+                container.appendChild(taskElement);
+            });
+            
+            // تحديث عداد المهام
+            const pendingTasks = tasks.filter(t => !t.completed).length;
+            document.getElementById('tasksBadge').textContent = pendingTasks;
+        }
+
+        // تحديث قائمة الرسائل
+        function updateMessagesList(messages) {
+            const container = document.getElementById('messagesList');
+            container.innerHTML = '';
+            
+            messages.slice(0, 3).forEach(msg => {
+                const messageElement = document.createElement('div');
+                messageElement.className = `message-item ${msg.unread ? 'unread' : ''}`;
+                messageElement.innerHTML = `
+                    <div class="message-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-sender">${msg.sender}</div>
+                        <div class="message-text">${msg.text}</div>
+                        <div class="message-time">${msg.time}</div>
+                    </div>
+                    ${msg.unread ? '<span class="unread-dot"></span>' : ''}
+                `;
+                container.appendChild(messageElement);
+            });
+            
+            // تحديث عداد الرسائل
+            const unreadMessages = messages.filter(m => m.unread).length;
+            document.getElementById('messagesBadge').textContent = unreadMessages;
+        }
+
+        // تحديث الإخطارات
+        function updateNotifications(notifications) {
+            const container = document.getElementById('notificationsList');
+            const countElement = document.getElementById('notificationCount');
+            
+            container.innerHTML = '';
+            let unreadCount = 0;
+            
+            notifications.slice(0, 5).forEach(notif => {
+                const notifElement = document.createElement('div');
+                notifElement.className = `notification-item ${notif.type} ${notif.read ? 'read' : 'unread'}`;
+                notifElement.innerHTML = `
+                    <div class="notification-icon">
+                        <i class="fas fa-${getNotificationIcon(notif.type)}"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">${notif.title}</div>
+                        <div class="notification-text">${notif.message}</div>
+                        <div class="notification-time">${notif.time}</div>
+                    </div>
+                    <button class="notification-dismiss" onclick="dismissNotification('${notif.id}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                container.appendChild(notifElement);
+                
+                if (!notif.read) unreadCount++;
+            });
+            
+            countElement.textContent = unreadCount;
+            countElement.style.display = unreadCount > 0 ? 'flex' : 'none';
+        }
+
+        // بدء الساعة
+        function startClock() {
+            function updateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('fr-FR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                document.getElementById('currentTime').textContent = timeString;
+                document.getElementById('modalTime').textContent = timeString;
+            }
+            
+            updateTime();
+            clockInterval = setInterval(updateTime, 1000);
+        }
+
+        // بدء مؤقت الشيفت
+        function startShiftTimer() {
+            function updateShiftTimer() {
+                const now = new Date();
+                let shiftStart, shiftEnd;
+                
+                if (agentProfile.shift === 'Shift A') {
+                    shiftStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0);
+                    shiftEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 0, 0);
+                } else {
+                    shiftStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 14, 0, 0);
+                    shiftEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 0, 0);
+                }
+                
+                if (now < shiftStart) {
+                    // قبل بدء الشيفت
+                    const diff = shiftStart - now;
+                    document.getElementById('shiftTimer').querySelector('span').textContent = 
+                        `Début dans ${formatTime(diff)}`;
+                } else if (now > shiftEnd) {
+                    // بعد انتهاء الشيفت
+                    document.getElementById('shiftTimer').querySelector('span').textContent = 'Terminé';
+                } else {
+                    // أثناء الشيفت
+                    const diff = shiftEnd - now;
+                    document.getElementById('shiftTimer').querySelector('span').textContent = 
+                        formatTime(diff);
+                }
+            }
+            
+            updateShiftTimer();
+            shiftInterval = setInterval(updateShiftTimer, 1000);
+        }
+
+        function formatTime(milliseconds) {
+            const hours = Math.floor(milliseconds / (1000 * 60 * 60));
+            const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
+            
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // تبديل التبويبات
+        function switchTab(tabName) {
+            // إخفاء جميع التبويبات
+            document.querySelectorAll('.content-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // إزالة النشاط من القائمة الجانبية
+            document.querySelectorAll('.sidebar-menu li').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // إظهار التبويب المحدد
+            document.getElementById(tabName).classList.add('active');
+            
+            // تحديث القائمة الجانبية
+            const menuItem = document.querySelector(`.sidebar-menu a[href="#${tabName}"]`);
+            if (menuItem) {
+                menuItem.parentElement.classList.add('active');
+            }
+            
+            // تحميل بيانات التبويب إذا لزم الأمر
+            if (tabName === 'production') {
+                loadProductionData();
+            }
+        }
+
+        // Pointage
+        function clockInOut() {
+            openModal('clockModal');
+        }
+
+        async function confirmClockIn() {
+            try {
+                const response = await window.callEdgeFunction('clock-in', {
+                    agent_id: agentProfile.id,
+                    action: 'clock_in',
+                    timestamp: new Date().toISOString(),
+                    shift: agentProfile.shift
+                }, localStorage.getItem('auth_token'));
+                
+                if (response.success) {
+                    showNotification('Pointage enregistré avec succès', 'success');
+                    closeModal('clockModal');
+                    
+                    // تحديث حالة الإنتاج
+                    document.getElementById('productionStatus').classList.add('active');
+                }
+            } catch (error) {
+                showNotification('Erreur lors du pointage', 'error');
+            }
+        }
+
+        // إظهار/إخفاء الإخطارات
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notificationsDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // إظهار/إخفاء قائمة المستخدم
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // إظهار/إخفاء القائمة الجانبية (للجوال)
+        function toggleSidebar() {
+            document.querySelector('.dashboard-sidebar').classList.toggle('collapsed');
+        }
+
+        // تسجيل الخروج
+        function logout() {
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                window.authManager.logout();
+            }
+        }
+
+        // فتح/إغلاق النوافذ المنبثقة
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // إظهار الإشعارات
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `toast-notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // تهيئة الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', initDashboard);
+        
+        // تنظيف المؤقتات عند إغلاق الصفحة
+        window.addEventListener('beforeunload', () => {
+            if (clockInterval) clearInterval(clockInterval);
+            if (shiftInterval) clearInterval(shiftInterval);
+        });
+    </script>
+</body>
+</html>
