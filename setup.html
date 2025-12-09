@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Profil - Draexlmaier</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="assets/favicon.ico">
+</head>
+<body class="setup-page">
+    <div class="setup-container">
+        <!-- Barre de progression -->
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Informations personnelles</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Configuration professionnelle</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Sécurité et validation</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Formulaire principal -->
+        <div class="setup-form-wrapper">
+            <div class="setup-header">
+                <div class="header-content">
+                    <h1><i class="fas fa-user-cog"></i> Configuration de votre profil</h1>
+                    <p>Complétez ces informations pour activer votre compte</p>
+                </div>
+                <div class="user-preview">
+                    <div class="avatar-preview">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info-preview">
+                        <strong id="previewName">Nouvel utilisateur</strong>
+                        <small id="previewRole">Chargement...</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Étape 1: Informations personnelles -->
+            <div id="step1" class="setup-step active">
+                <div class="step-header">
+                    <h2><i class="fas fa-id-card"></i> Informations personnelles</h2>
+                    <p>Veuillez saisir vos informations d'identification</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="full_name">
+                            <i class="fas fa-user"></i> Nom complet *
+                        </label>
+                        <input type="text" id="full_name" 
+                               placeholder="Prénom Nom"
+                               required
+                               oninput="updatePreview()">
+                        <small class="form-hint">Tel qu'il apparaîtra dans le système</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="matricule">
+                            <i class="fas fa-id-badge"></i> Matricule
+                        </label>
+                        <input type="text" id="matricule" 
+                               placeholder="Votre numéro de matricule"
+                               oninput="updatePreview()">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">
+                            <i class="fas fa-phone"></i> Téléphone
+                        </label>
+                        <input type="tel" id="phone" 
+                               placeholder="06 XX XX XX XX"
+                               pattern="[0-9]{10}">
+                        <small class="form-hint">Format: 0612345678</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hire_date">
+                            <i class="fas fa-calendar-alt"></i> Date d'entrée
+                        </label>
+                        <input type="date" id="hire_date">
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button type="button" class="btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Annuler
+                    </button>
+                    <button type="button" class="btn-primary" onclick="nextStep()">
+                        Suivant <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Étape 2: Configuration professionnelle -->
+            <div id="step2" class="setup-step">
+                <div class="step-header">
+                    <h2><i class="fas fa-briefcase"></i> Configuration professionnelle</h2>
+                    <p>Configurez vos paramètres de travail selon votre rôle</p>
+                </div>
+
+                <!-- Configuration selon le rôle -->
+                <div id="roleConfiguration"></div>
+
+                <div class="step-actions">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Précédent
+                    </button>
+                    <button type="button" class="btn-primary" onclick="nextStep()">
+                        Suivant <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Étape 3: Sécurité et validation -->
+            <div id="step3" class="setup-step">
+                <div class="step-header">
+                    <h2><i class="fas fa-shield-alt"></i> Sécurité du compte</h2>
+                    <p>Définissez un mot de passe sécurisé pour votre compte</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="new_password">
+                            <i class="fas fa-key"></i> Nouveau mot de passe *
+                        </label>
+                        <div class="password-container">
+                            <input type="password" id="new_password" 
+                                   minlength="8" 
+                                   required
+                                   oninput="checkPasswordStrength()">
+                            <div class="password-strength" id="passwordStrength">
+                                <div class="strength-bar"></div>
+                                <span class="strength-text">Force: Faible</span>
+                            </div>
+                        </div>
+                        <small class="form-hint">Minimum 8 caractères avec chiffres et lettres</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm_password">
+                            <i class="fas fa-check-circle"></i> Confirmer le mot de passe *
+                        </label>
+                        <input type="password" id="confirm_password" 
+                               required
+                               oninput="checkPasswordMatch()">
+                        <div class="match-status" id="passwordMatch">
+                            <i class="fas fa-times"></i> Les mots de passe ne correspondent pas
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Récapitulatif -->
+                <div class="summary-section">
+                    <h3><i class="fas fa-check-circle"></i> Récapitulatif de configuration</h3>
+                    <div class="summary-card">
+                        <div class="summary-content" id="setupSummary">
+                            <!-- Rempli dynamiquement -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-actions">
+                    <button type="button" class="btn-secondary" onclick="prevStep()">
+                        <i class="fas fa-arrow-left"></i> Précédent
+                    </button>
+                    <button type="submit" class="btn-primary" id="saveBtn" onclick="saveSetup()">
+                        <i class="fas fa-save"></i> Enregistrer la configuration
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panneau d'information -->
+        <div class="setup-sidebar">
+            <!-- Informations importantes -->
+            <div class="info-card">
+                <h4><i class="fas fa-info-circle"></i> Informations importantes</h4>
+                <ul class="info-list">
+                    <li>
+                        <i class="fas fa-exclamation-triangle warning"></i>
+                        <span>Tous les champs marqués * sont obligatoires</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Vous pourrez modifier ces informations ultérieurement</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Votre mot de passe doit contenir au moins 8 caractères</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-industry"></i>
+                        <span>Contactez votre supérieur pour les affectations de lignes</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Aide et support -->
+            <div class="help-card">
+                <h4><i class="fas fa-life-ring"></i> Besoin d'aide ?</h4>
+                <p>Contactez notre équipe de support:</p>
+                <div class="contact-info">
+                    <p>
+                        <i class="fas fa-phone"></i>
+                        <a href="tel:+212522123456">0522 12 34 56</a>
+                    </p>
+                    <p>
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:support.it@draexlmaier.ma">support.it@draexlmaier.ma</a>
+                    </p>
+                    <p>
+                        <i class="fas fa-clock"></i>
+                        Support disponible 7j/7, 8h-20h
+                    </p>
+                </div>
+            </div>
+
+            <!-- Étapes suivantes -->
+            <div class="next-steps-card">
+                <h4><i class="fas fa-road"></i> Étapes suivantes</h4>
+                <ol class="steps-list">
+                    <li>Validation de votre profil</li>
+                    <li>Accès à votre tableau de bord</li>
+                    <li>Formation système (optionnelle)</li>
+                    <li>Mise en production</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale de confirmation -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle success"></i> Configuration terminée</h3>
+                <button class="close-modal" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="success-animation">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h4>Votre profil a été configuré avec succès !</h4>
+                <p>Vous allez être redirigé vers votre tableau de bord dans quelques secondes.</p>
+                <div class="redirect-countdown">
+                    <i class="fas fa-clock"></i>
+                    Redirection dans <span id="countdown">5</span> secondes
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal()">
+                    Rester sur cette page
+                </button>
+                <button class="btn-primary" onclick="redirectNow()">
+                    <i class="fas fa-rocket"></i> Accéder maintenant
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        let currentStep = 1;
+        let userData = null;
+        let userRole = null;
+
+        // تهيئة الصفحة
+        async function initPage() {
+            try {
+                // التحقق من المصادقة
+                if (!window.authManager || !window.authManager.currentUser) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                userData = window.authManager.currentProfile;
+                userRole = userData.role;
+                
+                // تحديث المعاينة
+                updatePreview();
+                
+                // تحميل التكوين حسب الدور
+                loadRoleConfiguration();
+                
+                // تحديث شريط التقدم
+                updateProgressBar();
+                
+            } catch (error) {
+                console.error('Initialization error:', error);
+                window.location.href = 'login.html';
+            }
+        }
+
+        // تحديث معاينة المستخدم
+        function updatePreview() {
+            const name = document.getElementById('full_name').value || userData.full_name;
+            document.getElementById('previewName').textContent = name || 'Nouvel utilisateur';
+            document.getElementById('previewRole').textContent = userRole || 'Chargement...';
+        }
+
+        // تحميل التكوين حسب الدور
+        function loadRoleConfiguration() {
+            const container = document.getElementById('roleConfiguration');
+            let html = '';
+
+            switch(userRole) {
+                case 'Agent':
+                    html = `
+                        <div class="role-config-section">
+                            <h4><i class="fas fa-industry"></i> Configuration Agent Production</h4>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="shift">Shift *</label>
+                                    <select id="shift" required>
+                                        <option value="">Sélectionnez un shift</option>
+                                        <option value="Shift A">Shift A (06:00 - 14:00)</option>
+                                        <option value="Shift B">Shift B (14:00 - 22:00)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="department">Département *</label>
+                                    <select id="department" required onchange="loadDepartmentLines()">
+                                        <option value="">Sélectionnez un département</option>
+                                        <option value="INR">INR</option>
+                                        <option value="THS">THS</option>
+                                        <option value="COCPIT">COCPIT</option>
+                                        <option value="BASIS">BASIS</option>
+                                        <option value="MM">MM</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="production_line">Ligne de production *</label>
+                                <select id="production_line" required>
+                                    <option value="">Sélectionnez d'abord un département</option>
+                                </select>
+                                <small>Vous serez responsable de cette ligne</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="line_side">Côté de la ligne</label>
+                                <select id="line_side">
+                                    <option value="Gauche">Côté gauche</option>
+                                    <option value="Droite">Côté droit</option>
+                                    <option value="Complet">Ligne complète</option>
+                                </select>
+                                <small>Détermine votre zone de travail sur la ligne</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="supervisor_id">Superviseur assigné</label>
+                                <select id="supervisor_id">
+                                    <option value="">Auto-assignation</option>
+                                    <!-- Rempli dynamiquement -->
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'Chef d\'équipe':
+                    html = `
+                        <div class="role-config-section">
+                            <h4><i class="fas fa-user-tie"></i> Configuration Chef d'Équipe</h4>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="shift">Shift *</label>
+                                    <select id="shift" required>
+                                        <option value="">Sélectionnez un shift</option>
+                                        <option value="Shift A">Shift A</option>
+                                        <option value="Shift B">Shift B</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="managed_departments">Départements gérés *</label>
+                                    <select id="managed_departments" multiple required>
+                                        <option value="INR">INR</option>
+                                        <option value="THS">THS</option>
+                                        <option value="COCPIT">COCPIT</option>
+                                        <option value="BASIS">BASIS</option>
+                                        <option value="MM">MM</option>
+                                    </select>
+                                    <small>Maintenez Ctrl (Cmd sur Mac) pour sélectionner plusieurs</small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="managed_lines">Lignes sous responsabilité</label>
+                                <input type="text" id="managed_lines" 
+                                       placeholder="Ex: Line 1, Line 3, Line 5">
+                                <small>Séparez par des virgules</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="max_agents">Nombre maximum d'agents</label>
+                                <input type="number" id="max_agents" min="1" max="50" value="20">
+                                <small>Nombre d'agents que vous pouvez superviser</small>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'Superviseur':
+                    html = `
+                        <div class="role-config-section">
+                            <h4><i class="fas fa-user-shield"></i> Configuration Superviseur</h4>
+                            
+                            <div class="form-group">
+                                <label for="work_type">Type de travail *</label>
+                                <select id="work_type" required>
+                                    <option value="administratif">Horaire administratif</option>
+                                    <option value="shift">Travail par shift</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="supervised_departments">Départements supervisés *</label>
+                                    <select id="supervised_departments" multiple required>
+                                        <option value="INR">INR</option>
+                                        <option value="THS">THS</option>
+                                        <option value="COCPIT">COCPIT</option>
+                                        <option value="BASIS">BASIS</option>
+                                        <option value="MM">MM</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="office_location">Bureau assigné</label>
+                                    <select id="office_location">
+                                        <option value="Bureau ZSB 1">Bureau ZSB 1</option>
+                                        <option value="Bureau ZSB 2">Bureau ZSB 2</option>
+                                        <option value="Bureau Superviseurs">Bureau Superviseurs</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="supervisor_level">Niveau de supervision</label>
+                                <select id="supervisor_level">
+                                    <option value="Niveau 1">Niveau 1 (Junior)</option>
+                                    <option value="Niveau 2">Niveau 2 (Senior)</option>
+                                    <option value="Niveau 3">Niveau 3 (Principal)</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'Sous-directeur':
+                case 'Directeur':
+                    html = `
+                        <div class="role-config-section">
+                            <h4><i class="fas fa-user-cog"></i> Configuration Direction</h4>
+                            
+                            <div class="form-group">
+                                <label for="work_type">Type de travail *</label>
+                                <select id="work_type" required>
+                                    <option value="administratif">Horaire administratif</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="office_location">Bureau *</label>
+                                    <select id="office_location" required>
+                                        <option value="Bureau Direction 1">Bureau Direction 1</option>
+                                        <option value="Bureau Direction 2">Bureau Direction 2</option>
+                                        <option value="Bureau Directeur">Bureau Directeur</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="access_level">Niveau d'accès *</label>
+                                    <select id="access_level" required>
+                                        <option value="Niveau 1">Niveau 1 - Données département</option>
+                                        <option value="Niveau 2">Niveau 2 - Données ZSB</option>
+                                        <option value="Niveau 3">Niveau 3 - Données complètes</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reporting_frequency">Fréquence de reporting</label>
+                                <select id="reporting_frequency">
+                                    <option value="quotidien">Quotidien</option>
+                                    <option value="hebdomadaire">Hebdomadaire</option>
+                                    <option value="mensuel">Mensuel</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                default:
+                    html = '<p>Configuration non disponible pour votre rôle.</p>';
+            }
+
+            container.innerHTML = html;
+            
+            // تعبئة البيانات الموجودة
+            populateExistingData();
+        }
+
+        // تعبئة البيانات الموجودة
+        function populateExistingData() {
+            if (userData) {
+                if (userData.shift) {
+                    const shiftSelect = document.getElementById('shift');
+                    if (shiftSelect) shiftSelect.value = userData.shift;
+                }
+                
+                if (userData.department) {
+                    const deptSelect = document.getElementById('department');
+                    if (deptSelect) deptSelect.value = userData.department;
+                }
+                
+                // ... المزيد من التعبئة
+            }
+        }
+
+        // تحميل خطوط الإنتاج حسب القسم
+        async function loadDepartmentLines() {
+            const department = document.getElementById('department')?.value;
+            const lineSelect = document.getElementById('production_line');
+            
+            if (!department || !lineSelect) return;
+            
+            // محاكاة البيانات - يمكنك استبدالها ببيانات حقيقية
+            const lines = {
+                'INR': ['INR Line 1', 'INR Line 2', 'INR Line 3', 'INR Line 4', 'INR Line 5'],
+                'THS': ['THS Line 6', 'THS Line 7', 'THS Line 8'],
+                'COCPIT': ['COCPIT Line 9', 'COCPIT Line 10'],
+                'BASIS': ['BASIS Line 11', 'BASIS Line 12'],
+                'MM': ['MM Line 13', 'MM Line 14', 'MM Line 15']
+            };
+            
+            lineSelect.innerHTML = '<option value="">Sélectionnez une ligne</option>';
+            
+            if (lines[department]) {
+                lines[department].forEach(line => {
+                    const option = document.createElement('option');
+                    option.value = line;
+                    option.textContent = line;
+                    lineSelect.appendChild(option);
+                });
+            }
+        }
+
+        // الخطوة التالية
+        function nextStep() {
+            if (!validateStep(currentStep)) {
+                showError('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+
+            const currentElement = document.getElementById(`step${currentStep}`);
+            const nextStepNumber = currentStep + 1;
+            const nextElement = document.getElementById(`step${nextStepNumber}`);
+
+            if (currentElement && nextElement) {
+                currentElement.classList.remove('active');
+                nextElement.classList.add('active');
+                currentStep = nextStepNumber;
+                
+                updateProgressBar();
+                
+                if (currentStep === 3) {
+                    updateSummary();
+                }
+            }
+        }
+
+        // الخطوة السابقة
+        function prevStep() {
+            if (currentStep > 1) {
+                const currentElement = document.getElementById(`step${currentStep}`);
+                const prevStepNumber = currentStep - 1;
+                const prevElement = document.getElementById(`step${prevStepNumber}`);
+
+                if (currentElement && prevElement) {
+                    currentElement.classList.remove('active');
+                    prevElement.classList.add('active');
+                    currentStep = prevStepNumber;
+                    
+                    updateProgressBar();
+                }
+            }
+        }
+
+        // تحديث شريط التقدم
+        function updateProgressBar() {
+            const percentage = ((currentStep - 1) / 2) * 100;
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            
+            // تحديث الخطوات
+            document.querySelectorAll('.step').forEach(step => {
+                const stepNumber = parseInt(step.dataset.step);
+                if (stepNumber <= currentStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+        }
+
+        // التحقق من صحة الخطوة
+        function validateStep(step) {
+            switch(step) {
+                case 1:
+                    return document.getElementById('full_name').value.trim().length > 0;
+                    
+                case 2:
+                    // التحقق حسب الدور
+                    if (userRole === 'Agent') {
+                        const shift = document.getElementById('shift');
+                        const department = document.getElementById('department');
+                        const line = document.getElementById('production_line');
+                        
+                        return shift && shift.value && 
+                               department && department.value && 
+                               line && line.value;
+                    }
+                    return true;
+                    
+                default:
+                    return true;
+            }
+        }
+
+        // تحقق قوة كلمة المرور
+        function checkPasswordStrength() {
+            const password = document.getElementById('new_password').value;
+            const strengthBar = document.querySelector('.strength-bar');
+            const strengthText = document.querySelector('.strength-text');
+            
+            let strength = 0;
+            let color = '#ef4444';
+            let text = 'Faible';
+            
+            if (password.length >= 8) strength += 25;
+            if (/[A-Z]/.test(password)) strength += 25;
+            if (/[0-9]/.test(password)) strength += 25;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 25;
+            
+            if (strength >= 75) {
+                color = '#10b981';
+                text = 'Forte';
+            } else if (strength >= 50) {
+                color = '#f59e0b';
+                text = 'Moyenne';
+            }
+            
+            strengthBar.style.width = `${strength}%`;
+            strengthBar.style.backgroundColor = color;
+            strengthText.textContent = `Force: ${text}`;
+            strengthText.style.color = color;
+        }
+
+        // تحقق تطابق كلمة المرور
+        function checkPasswordMatch() {
+            const password = document.getElementById('new_password').value;
+            const confirm = document.getElementById('confirm_password').value;
+            const matchStatus = document.getElementById('passwordMatch');
+            
+            if (!confirm) return;
+            
+            if (password === confirm) {
+                matchStatus.innerHTML = '<i class="fas fa-check"></i> Les mots de passe correspondent';
+                matchStatus.className = 'match-status success';
+            } else {
+                matchStatus.innerHTML = '<i class="fas fa-times"></i> Les mots de passe ne correspondent pas';
+                matchStatus.className = 'match-status error';
+            }
+        }
+
+        // تحديث الملخص
+        function updateSummary() {
+            const summary = document.getElementById('setupSummary');
+            let html = `
+                <div class="summary-item">
+                    <strong>Nom complet:</strong> ${document.getElementById('full_name').value}
+                </div>
+                <div class="summary-item">
+                    <strong>Rôle:</strong> ${userRole}
+                </div>
+            `;
+            
+            // إضافة معلومات حسب الدور
+            if (userRole === 'Agent') {
+                html += `
+                    <div class="summary-item">
+                        <strong>Shift:</strong> ${document.getElementById('shift').value}
+                    </div>
+                    <div class="summary-item">
+                        <strong>Département:</strong> ${document.getElementById('department').value}
+                    </div>
+                    <div class="summary-item">
+                        <strong>Ligne:</strong> ${document.getElementById('production_line').value}
+                    </div>
+                `;
+            }
+            
+            summary.innerHTML = html;
+        }
+
+        // حفظ الإعدادات
+        async function saveSetup() {
+            const saveBtn = document.getElementById('saveBtn');
+            const originalText = saveBtn.innerHTML;
+            
+            try {
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+                saveBtn.disabled = true;
+                
+                // جمع البيانات
+                const setupData = {
+                    full_name: document.getElementById('full_name').value.trim(),
+                    matricule: document.getElementById('matricule').value.trim() || null,
+                    phone: document.getElementById('phone').value.trim() || null,
+                    hire_date: document.getElementById('hire_date').value || null,
+                    needs_setup: false,
+                    updated_at: new Date().toISOString()
+                };
+                
+                // إضافة بيانات حسب الدور
+                if (userRole === 'Agent') {
+                    setupData.shift = document.getElementById('shift').value;
+                    setupData.department = document.getElementById('department').value;
+                    setupData.production_line = document.getElementById('production_line').value;
+                    setupData.line_side = document.getElementById('line_side').value;
+                    setupData.work_type = 'shift';
+                }
+                // ... إضافة المزيد من الأدوار
+                
+                // تحديث كلمة المرور إذا تم توفيرها
+                const newPassword = document.getElementById('new_password').value;
+                const confirmPassword = document.getElementById('confirm_password').value;
+                
+                if (newPassword && confirmPassword) {
+                    if (newPassword !== confirmPassword) {
+                        throw new Error('Les mots de passe ne correspondent pas');
+                    }
+                    
+                    if (newPassword.length < 8) {
+                        throw new Error('Le mot de passe doit contenir au moins 8 caractères');
+                    }
+                    
+                    await supabaseClient.auth.updateUser({
+                        password: newPassword
+                    });
+                }
+                
+                // تحديث الملف الشخصي في Supabase
+                const { error } = await supabaseClient
+                    .from('profiles')
+                    .update(setupData)
+                    .eq('id', userData.id);
+                
+                if (error) throw error;
+                
+                // عرض رسالة النجاح
+                openModal();
+                
+            } catch (error) {
+                console.error('Save error:', error);
+                showError(error.message || 'Erreur lors de l\'enregistrement');
+            } finally {
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+            }
+        }
+
+        // فتح النافذة المنبثقة
+        function openModal() {
+            document.getElementById('confirmationModal').classList.add('active');
+            
+            // بدء العد التنازلي
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown');
+            
+            const interval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    redirectNow();
+                }
+            }, 1000);
+        }
+
+        // إغلاق النافذة المنبثقة
+        function closeModal() {
+            document.getElementById('confirmationModal').classList.remove('active');
+        }
+
+        // التوجيه الفوري
+        function redirectNow() {
+            closeModal();
+            window.location.href = getDashboardUrl();
+        }
+
+        // الحصول على رابط الداشبورد المناسب
+        function getDashboardUrl() {
+            const dashboards = {
+                'Agent': 'agent.html',
+                'Chef d\'équipe': 'chef.html',
+                'Superviseur': 'superviseur.html',
+                'Sous-directeur': 'sousdir.html',
+                'Directeur': 'directeur.html'
+            };
+            
+            return dashboards[userRole] || 'login.html';
+        }
+
+        // تسجيل الخروج
+        function logout() {
+            if (confirm('Êtes-vous sûr de vouloir annuler la configuration ?')) {
+                window.authManager.logout();
+            }
+        }
+
+        // عرض خطأ
+        function showError(message) {
+            alert(`Erreur: ${message}`);
+        }
+
+        // تهيئة الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
