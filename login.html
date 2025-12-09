@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ZSB | Connexion</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>body{background:#0f172a;color:#e2e8f0;margin:0;display:flex;align-items:center;justify-content:center;height:100vh;font-family:Arial}
+.c{max-width:380px;width:100%;background:#1e293b;padding:40px;border-radius:16px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.7)}
+h1{color:#10b981;margin-bottom:30px;font-size:28px}input,button{width:100%;padding:16px;margin:12px 0;border-radius:12px;border:none;font-size:17px}
+input{background:#334155;color:white}button{background:#10b981;color:white;font-weight:bold;cursor:pointer}
+button:hover{background:#059669}small{color:#94a3b8;font-size:13px}</style>
+</head><body><div class="c">
+<h1>Draexlmaier ZSB</h1>
+<input type="email" id="email" placeholder="Email" required>
+<input type="password" id="pass" placeholder="Mot de passe" required>
+<button id="loginBtn">Connexion</button>
+<small>Admin: admin@draexlmaier.ma | drax123</small>
+</div>
+
+<script>
+const supabase = window.supabase.createClient("https://arqzqflgzszfzwpvtkip.supabase.co","sb_publishable_HEmQwOrXpJm38Y2d9_rD1Q_scpmFg0o");
+document.getElementById("loginBtn").onclick = async () => {
+  const { data, error } = await supabase.auth.signInWithPassword({email:email.value.trim(),password:pass.value});
+  if (error) return alert(error.message);
+  const { data: p } = await supabase.from('profiles').select('role').eq('id',data.user.id).single();
+  if (!p?.role) return location.href='setup.html';
+  const map = {"Agent":"agent.html","Chef d'équipe":"chef.html","Superviseur":"superviseur.html","Sous-directeur":"sousdir.html","Directeur":"directeur.html"};
+  location.href = map[p.role] || "agent.html";
+};
+</script></body></html>
