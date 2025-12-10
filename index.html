@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion -  ZSB Management System</title>
+    <title>Connexion - ZSB Management System</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/auth.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -78,7 +78,7 @@
                         </label>
                         <div class="input-with-icon">
                             <input type="email" id="email" name="email" 
-                                   placeholder="prenom.nom@draexlmaier.ma" 
+                                   placeholder="prenom.nom@draexlmaier.tn" 
                                    required autocomplete="username">
                             <div class="input-hint">
                                 <i class="fas fa-info-circle"></i>
@@ -128,23 +128,23 @@
                         <h4><i class="fas fa-bolt"></i> Accès rapide (Démonstration)</h4>
                         <div class="demo-buttons">
                             <button type="button" class="demo-btn agent" 
-                                    onclick="fillDemoCredentials('agent@draexlmaier.ma', 'drax123')">
+                                    onclick="fillDemoCredentials('agent@draexlmaier.tn', 'drax123')">
                                 <i class="fas fa-user"></i> Agent
                             </button>
                             <button type="button" class="demo-btn chef" 
-                                    onclick="fillDemoCredentials('chef@draexlmaier.ma', 'drax123')">
+                                    onclick="fillDemoCredentials('chef@draexlmaier.tn', 'drax123')">
                                 <i class="fas fa-user-tie"></i> Chef d'équipe
                             </button>
                             <button type="button" class="demo-btn supervisor" 
-                                    onclick="fillDemoCredentials('superviseur@draexlmaier.ma', 'drax123')">
+                                    onclick="fillDemoCredentials('superviseur@draexlmaier.tn', 'drax123')">
                                 <i class="fas fa-user-shield"></i> Superviseur
                             </button>
                             <button type="button" class="demo-btn sousdir" 
-                                    onclick="fillDemoCredentials('sousdir@draexlmaier.ma', 'drax123')">
+                                    onclick="fillDemoCredentials('sousdir@draexlmaier.tn', 'drax123')">
                                 <i class="fas fa-user-cog"></i> Sous-directeur
                             </button>
                             <button type="button" class="demo-btn directeur" 
-                                    onclick="fillDemoCredentials('directeur@draexlmaier.ma', 'drax123')">
+                                    onclick="fillDemoCredentials('directeur@draexlmaier.tn', 'drax123')">
                                 <i class="fas fa-crown"></i> Directeur
                             </button>
                         </div>
@@ -162,7 +162,7 @@
                     <div class="info-tip">
                         <i class="fas fa-exclamation-triangle"></i>
                         <p>Pour toute assistance, contactez le support IT: 
-                           <a href="mailto:support.it@draexlmaier.ma">support.it@draexlmaier.ma</a>
+                           <a href="mailto:support.it@draexlmaier.tn">support.it@draexlmaier.tn</a>
                         </p>
                     </div>
                 </div>
@@ -170,7 +170,7 @@
             
             <!-- Pied de page -->
             <footer class="auth-footer">
-                <p>&copy; 2024 Draexlmaier Maroc - Système ZSB v2.0</p>
+                <p>&copy; 2025 Draexlmaier DETJ - Système ZSB v0</p>
                 <div class="footer-links">
                     <a href="#"><i class="fas fa-shield-alt"></i> Sécurité</a>
                     <a href="#"><i class="fas fa-question-circle"></i> Aide</a>
@@ -302,7 +302,7 @@
             
             // تعبئة تلقائية للبيئة المحلية
             if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                document.getElementById('email').value = 'agent@draexlmaier.ma';
+                document.getElementById('email').value = 'agent@draexlmaier.tn';
                 document.getElementById('password').value = 'drax123';
             }
         });
