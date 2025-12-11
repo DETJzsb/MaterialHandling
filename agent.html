@@ -529,7 +529,7 @@
             try {
                 // التحقق من المصادقة
                 if (!window.authManager || !window.authManager.currentProfile) {
-                    window.location.href = 'login.html';
+                    window.location.href = 'index.html';
                     return;
                 }
 
@@ -559,7 +559,7 @@
                 
             } catch (error) {
                 console.error('Dashboard init error:', error);
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
             }
         }
 
