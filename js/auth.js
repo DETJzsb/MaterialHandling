@@ -316,7 +316,7 @@ class AuthManager {
 
     redirectToLogin() {
         // Don't redirect if already on login page
-        if (window.location.pathname.includes('login.html')) {
+        if (window.location.pathname.includes('index.html')) {
             return;
         }
         
@@ -324,7 +324,7 @@ class AuthManager {
         const returnTo = window.location.pathname + window.location.search;
         sessionStorage.setItem('returnTo', returnTo);
         
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
     }
 
     redirectToDashboard() {
@@ -475,7 +475,7 @@ window.authManager = new AuthManager();
 document.addEventListener('DOMContentLoaded', async () => {
     // Skip check for login and setup pages
     const currentPage = window.location.pathname;
-    if (currentPage.includes('login.html') || currentPage.includes('setup.html')) {
+    if (currentPage.includes('index.html') || currentPage.includes('setup.html')) {
         return;
     }
     
