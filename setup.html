@@ -304,7 +304,7 @@
                 
             } catch (error) {
                 console.error('Initialization error:', error);
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
             }
         }
 
@@ -833,7 +833,7 @@
                 'Directeur': 'directeur.html'
             };
             
-            return dashboards[userRole] || 'login.html';
+            return dashboards[userRole] || 'index.html';
         }
 
         // تسجيل الخروج
